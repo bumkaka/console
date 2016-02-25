@@ -226,9 +226,13 @@ $doc->Save();
 					<?php
 					if ($_POST['sql']!=''){
 						$tstart = $modx->getMicroTime();
-						if (!$result = @ mysql_query($_POST['sql'], $modx->db->conn)) {
-							echo  mysql_error($modx->db->conn);
-						} else {
+						if ((get_class($modx->db->conn) == 'mysql') && (!$result = @ mysql_query($_POST['sql'], $modx->db->conn))) {
+								echo  mysql_error($modx->db->conn);
+						}
+						elseif((get_class($modx->db->conn) == 'mysqli') && (!($result = $modx->db->conn->query($_POST['sql'])))){
+							echo  mysqli_error($modx->db->conn);
+						}
+						else {
 							$tend = $modx->getMicroTime();
 							$totaltime = $tend - $tstart;
 							$i=0;
